@@ -1,0 +1,31 @@
+# Secrets — NEVER commit these
+.env
+*.pem
+*.key
+terraform.tfvars
+terraform.tfstate
+terraform.tfstate.backup
+.terraform/
+
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# .NET
+bin/
+obj/
+*.user
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Docker
+.dockerignore
+
+# OS
+.DS_Store
+Thumbs.db

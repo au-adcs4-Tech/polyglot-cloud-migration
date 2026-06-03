@@ -1,0 +1,8 @@
+# Copy this file to terraform.tfvars and fill in your real values.
+# NEVER commit terraform.tfvars to git.
+
+aws_region       = "us-east-1"
+project_name     = "polyglot-cloud"
+instance_type    = "t3.small"
+ssh_public_key   = "ssh-rsa AAAA...your-public-key-here"
+allowed_ssh_cidr = "YOUR_IP/32"

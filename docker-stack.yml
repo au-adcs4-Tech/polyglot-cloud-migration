@@ -1,0 +1,58 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis:7-alpine
+    networks:
+      - polyglot_net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  backend:
+    image: ${DOCKER_USERNAME:-yourusername}/polyglot-backend:latest
+    environment:
+      - REDIS_URL=redis:6379
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "5000:5000"
+    networks:
+      - polyglot_net
+    depends_on:
+      - redis
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  worker:
+    image: ${DOCKER_USERNAME:-yourusername}/polyglot-worker:latest
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - polyglot_net
+    depends_on:
+      - redis
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  frontend:
+    image: ${DOCKER_USERNAME:-yourusername}/polyglot-frontend:latest
+    ports:
+      - "3000:80"
+    networks:
+      - polyglot_net
+    depends_on:
+      - backend
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  polyglot_net:
+    driver: overlay

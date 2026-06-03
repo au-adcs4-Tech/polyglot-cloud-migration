@@ -1,0 +1,36 @@
+flowchart TD
+    Dev["👨‍💻 Developer\nLocal Machine"] -->|"git push / Pull Request"| GH["🐙 GitHub Repository\nOrganization Account"]
+
+    GH -->|"GitHub Actions CI trigger"| CI["⚙️ GitHub Actions CI\n• dotnet test\n• pytest\n• npm test\n• ruff lint\n• docker build\n• docker push"]
+
+    CI -->|"Images pushed"| REG["🗂️ Docker Hub\npolyglot-backend:latest\npolyglot-worker:latest\npolyglot-frontend:latest"]
+
+    CI -->|"HTTP trigger on main merge"| JK["🔧 Jenkins CD Server\nJenkinsfile pipeline"]
+
+    JK -->|"SSH deployment"| VM["☁️ AWS EC2 (Terraform)\nUbuntu 22.04\nt3.small"]
+
+    VM -->|"docker compose up -d"| APP["🚀 Running Application"]
+
+    APP --> FE["🌐 Frontend :3000\nReact / Nginx"]
+    APP --> BE["⚡ .NET API :5000\nASP.NET Core 8"]
+    APP --> WK["🐍 Python Worker\nBackground processor"]
+    APP --> RD["🔴 Redis :6379\nTask queue"]
+
+    FE -->|"REST /api/*"| BE
+    BE -->|"LPUSH task_queue"| RD
+    WK -->|"BLPOP task_queue"| RD
+
+    Browser["🌍 Browser"] -->|"http://VM_IP:3000"| FE
+
+    style Dev fill:#1e293b,color:#e2e8f0
+    style GH fill:#24292e,color:#e2e8f0
+    style CI fill:#2d333b,color:#e2e8f0
+    style REG fill:#1d4ed8,color:#fff
+    style JK fill:#d97706,color:#fff
+    style VM fill:#059669,color:#fff
+    style APP fill:#1e293b,color:#e2e8f0
+    style FE fill:#0ea5e9,color:#fff
+    style BE fill:#7c3aed,color:#fff
+    style WK fill:#16a34a,color:#fff
+    style RD fill:#dc2626,color:#fff
+    style Browser fill:#374151,color:#e2e8f0
