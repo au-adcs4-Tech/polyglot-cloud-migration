@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/YOUR_ORG/polyglot-cloud-migration.git',
+                    url: 'https://github.com/au-adcs4-Tech/polyglot-cloud-migration.git',
                     credentialsId: 'github-token'
             }
         }
