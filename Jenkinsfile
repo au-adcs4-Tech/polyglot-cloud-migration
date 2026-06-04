@@ -45,8 +45,8 @@ pipeline {
                         ssh -o StrictHostKeyChecking=no ubuntu@${CLOUD_VM_IP} << 'REMOTE'
                             cd /home/ubuntu
                             export DOCKER_USERNAME=${DOCKER_USERNAME}
-                            docker compose -f docker-compose.prod.yml pull
-                            docker compose -f docker-compose.prod.yml up -d
+                            docker-compose -f /home/ubuntu/docker-compose.prod.yml pull
+                            docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d
                             docker ps
                         REMOTE
                     '''
