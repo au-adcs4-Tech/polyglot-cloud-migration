@@ -11,7 +11,7 @@ services:
         condition: on-failure
 
   backend:
-    image: ${DOCKER_USERNAME:-yourusername}/polyglot-backend:latest
+    image: ${DOCKER_USERNAME:-qalb}/polyglot-backend:latest
     environment:
       - REDIS_URL=redis:6379
       - ASPNETCORE_ENVIRONMENT=Production
@@ -27,7 +27,7 @@ services:
         condition: on-failure
 
   worker:
-    image: ${DOCKER_USERNAME:-yourusername}/polyglot-worker:latest
+    image: ${DOCKER_USERNAME:-qalb}/polyglot-worker:latest
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
@@ -41,7 +41,7 @@ services:
         condition: on-failure
 
   frontend:
-    image: ${DOCKER_USERNAME:-yourusername}/polyglot-frontend:latest
+    image: ${DOCKER_USERNAME:-qalb}/polyglot-frontend:latest
     ports:
       - "3000:80"
     networks:
