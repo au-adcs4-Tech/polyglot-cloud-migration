@@ -4,15 +4,13 @@ pipeline {
     environment {
         DOCKER_USERNAME = credentials('docker-username')
         CLOUD_VM_IP     = credentials('cloud-vm-ip')
-        SSH_KEY         = credentials('cloud-vm-ssh-key')
     }
 
     stages {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/au-adcs4-Tech/polyglot-cloud-migration.git',
-                    credentialsId: 'github-token'
+                    url: 'https://github.com/au-adcs4-Tech/polyglot-cloud-migration.git'
             }
         }
 
@@ -41,15 +39,9 @@ pipeline {
         stage('Deploy to Cloud VM') {
             steps {
                 sshagent(['cloud-vm-ssh-key']) {
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no ubuntu@${CLOUD_VM_IP} << 'REMOTE'
-                            cd /home/ubuntu
-                            export DOCKER_USERNAME=${DOCKER_USERNAME}
-                            docker-compose -f /home/ubuntu/docker-compose.prod.yml pull
-                            docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d
-                            docker ps
-                        REMOTE
-                    '''
+                    sh """
+                        ssh -o StrictHostKeyChecking=no ubuntu@\${CLOUD_VM_IP} 'DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml pull && DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d && docker ps'
+                    """
                 }
             }
         }
@@ -59,7 +51,7 @@ pipeline {
                 script {
                     retry(5) {
                         sleep(time: 10, unit: 'SECONDS')
-                        sh "curl -f http://${CLOUD_VM_IP}:5000/api/status || exit 1"
+                        sh "curl -f http://\${CLOUD_VM_IP}:5000/api/status || exit 1"
                     }
                 }
             }
@@ -68,10 +60,10 @@ pipeline {
 
     post {
         success {
-            echo "Deployment successful! App live at http://${CLOUD_VM_IP}:3000"
+            echo "Deployment successful!"
         }
         failure {
             echo "Deployment FAILED. Check the logs above."
         }
     }
-}
+} 
