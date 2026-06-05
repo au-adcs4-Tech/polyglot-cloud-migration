@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 // ─── DEMO CHANGE THIS for the final demo ────────────────────────────────────
 const APP_VERSION   = "v1.0.0";
-const BANNER_COLOR  = "#0ea5e9";   // change to any hex for demo
+const BANNER_COLOR  = "#16a34a";  // change to any hex for demo
 const BANNER_TEXT   = "Polyglot Cloud Migration — Live";
 // ────────────────────────────────────────────────────────────────────────────
 
