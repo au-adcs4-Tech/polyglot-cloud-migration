@@ -1,11 +1,9 @@
 pipeline {
     agent any
-
     environment {
         DOCKER_USERNAME = credentials('docker-username')
         CLOUD_VM_IP     = credentials('cloud-vm-ip')
     }
-
     stages {
         stage('Checkout') {
             steps {
@@ -13,7 +11,6 @@ pipeline {
                     url: 'https://github.com/au-adcs4-Tech/polyglot-cloud-migration.git'
             }
         }
-
         stage('Pull Latest Images') {
             steps {
                 sh '''
@@ -23,7 +20,6 @@ pipeline {
                 '''
             }
         }
-
         stage('Copy Deploy Files to Cloud VM') {
             steps {
                 sshagent(['cloud-vm-ssh-key']) {
@@ -35,17 +31,15 @@ pipeline {
                 }
             }
         }
-
         stage('Deploy to Cloud VM') {
             steps {
                 sshagent(['cloud-vm-ssh-key']) {
                     sh """
-                        ssh -o StrictHostKeyChecking=no ubuntu@\${CLOUD_VM_IP} 'DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml pull && DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d && docker ps'
+                        ssh -o StrictHostKeyChecking=no ubuntu@\${CLOUD_VM_IP} 'DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml pull && DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml down && DOCKER_USERNAME=${DOCKER_USERNAME} docker-compose -f /home/ubuntu/docker-compose.prod.yml up -d && docker ps'
                     """
                 }
             }
         }
-
         stage('Health Check') {
             steps {
                 script {
@@ -57,7 +51,6 @@ pipeline {
             }
         }
     }
-
     post {
         success {
             echo "Deployment successful!"
